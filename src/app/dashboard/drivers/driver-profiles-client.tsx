@@ -38,9 +38,12 @@ function getSafetyColor(score: number): string {
 
 export function DriverProfilesClient({
   initialDrivers,
+  userRole,
 }: {
   initialDrivers: Driver[];
+  userRole: string;
 }) {
+  const isReadOnly = userRole !== "Safety Officer";
   const [search, setSearch] = useState("");
   const [activeStatuses, setActiveStatuses] = useState<Set<string>>(
     new Set(DRIVER_STATUSES)
@@ -102,14 +105,22 @@ export function DriverProfilesClient({
             {initialDrivers.length} drivers registered
           </p>
         </div>
-        <button
-          onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-amber-500/20 transition-all hover:from-amber-400 hover:to-orange-400 hover:-translate-y-px hover:shadow-amber-500/30"
-        >
-          <Plus className="h-4 w-4" />
-          Add Driver
-        </button>
+        {!isReadOnly && (
+          <button
+            onClick={() => setShowModal(true)}
+            className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-amber-500/20 transition-all hover:from-amber-400 hover:to-orange-400 hover:-translate-y-px hover:shadow-amber-500/30"
+          >
+            <Plus className="h-4 w-4" />
+            Add Driver
+          </button>
+        )}
       </div>
+
+      {isReadOnly && (
+        <div className="bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs px-4 py-2 rounded-lg mb-6">
+          Viewing in Read-Only Mode
+        </div>
+      )}
 
       {/* Search */}
       <div className="flex items-center gap-3">
@@ -222,7 +233,7 @@ export function DriverProfilesClient({
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      {(expired || driver.status === "Suspended") && (
+                      {!isReadOnly && (expired || driver.status === "Suspended") && (
                         <button
                           onClick={() => handleSendReminder(driver.id)}
                           className="inline-flex items-center gap-1.5 rounded bg-[#1e1e2e] px-2.5 py-1.5 text-xs font-medium text-[#e0e0e0] transition-colors hover:bg-orange-500 hover:text-white"
