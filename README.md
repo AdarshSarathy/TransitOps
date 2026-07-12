@@ -1,36 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# TransitOps - Smart Transport Operations Platform
 
-## Getting Started
+TransitOps is a centralized ERP designed for logistics companies to manage fleets, dispatch trips, track maintenance, and enforce driver compliance.
 
-First, run the development server:
+## Architecture & Tech Stack
+- **Framework**: Next.js 15 (App Router)
+- **Backend/API**: React Server Actions
+- **Database**: SQLite (via Prisma ORM) for zero-config local deployment
+- **Styling**: Tailwind CSS v4
+- **Maps**: Google Maps API
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Key Features
+- **Role-Based Access Control (RBAC)**: Fine-grained access for Fleet Managers, Dispatchers, Safety Officers, and Financial Analysts.
+- **Smart Load Validator**: Automatically checks cargo weight against vehicle capacity.
+- **Auto-Suspension Compliance Engine**: Enforces rules to block trip assignments for drivers with expired licenses or suspended statuses.
+- **Operational Cost & ROI Aggregator**: Computes total operational costs (fuel + maintenance) per vehicle and aggregates fleet ROI.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Demo Credentials
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The platform is seeded with 4 predefined users:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Role | Email | Password |
+|---|---|---|
+| Fleet Manager | `fleet.manager@transitops.in` | `Transit@2026` |
+| Dispatcher | `dispatcher@transitops.in` | `Transit@2026` |
+| Safety Officer | `safety.officer@transitops.in` | `Transit@2026` |
+| Financial Analyst | `financial.analyst@transitops.in` | `Transit@2026` |
 
-## Learn More
+## Local Setup
 
-To learn more about Next.js, take a look at the following resources:
+1. **Install dependencies**:
+   ```bash
+   npm install
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. **Environment Configuration**:
+   Create a `.env.local` file in the root directory and add your Google Maps API Key:
+   ```env
+   NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_api_key_here
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3. **Database Setup**:
+   ```bash
+   npx prisma db push
+   npx prisma db seed
+   ```
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+4. **Run the development server**:
+   ```bash
+   npm run dev
+   ```
