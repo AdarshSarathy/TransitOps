@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { getSession } from "@/lib/auth";
 
 // Helper function to parse capacity string (e.g. "500 kg", "5 Ton") into a number of kg
 function parseCapacity(capacityStr: string): number {
@@ -54,6 +55,11 @@ export async function createTrip(
   _prevState: ActionState,
   formData: FormData
 ): Promise<ActionState> {
+  const session = await getSession();
+  if (session?.role !== "Dispatcher") {
+    throw new Error("Unauthorized: Only Dispatchers can manage trips.");
+  }
+
   await enforceCompliance();
 
   const source = formData.get("source")?.toString().trim();
@@ -89,12 +95,12 @@ export async function createTrip(
     return { error: "Selected vehicle is not available." };
   }
 
-  if (driver.status !== "Available") {
-    return { error: "Selected driver is not available." };
-  }
-
   if (driver.expiryDate < new Date() || driver.status === "Suspended") {
     return { error: "Driver is suspended or license is expired." };
+  }
+
+  if (driver.status !== "Available") {
+    return { error: "Selected driver is not available." };
   }
 
   const vehicleCapacityKg = parseCapacity(vehicle.capacity);
@@ -124,6 +130,11 @@ export async function createTrip(
 }
 
 export async function dispatchTrip(id: string): Promise<ActionState> {
+  const session = await getSession();
+  if (session?.role !== "Dispatcher") {
+    throw new Error("Unauthorized: Only Dispatchers can manage trips.");
+  }
+
   await enforceCompliance();
 
   const trip = await prisma.trip.findUnique({ where: { id }, include: { driver: true, vehicle: true } });
@@ -167,6 +178,11 @@ export async function dispatchTrip(id: string): Promise<ActionState> {
 }
 
 export async function completeTrip(id: string): Promise<ActionState> {
+  const session = await getSession();
+  if (session?.role !== "Dispatcher") {
+    throw new Error("Unauthorized: Only Dispatchers can manage trips.");
+  }
+
   const trip = await prisma.trip.findUnique({ where: { id } });
   if (!trip) return { error: "Trip not found." };
   if (trip.status !== "Dispatched") return { error: "Only Dispatched trips can be completed." };
@@ -204,6 +220,11 @@ export async function completeTrip(id: string): Promise<ActionState> {
 }
 
 export async function cancelTrip(id: string): Promise<ActionState> {
+  const session = await getSession();
+  if (session?.role !== "Dispatcher") {
+    throw new Error("Unauthorized: Only Dispatchers can manage trips.");
+  }
+
   const trip = await prisma.trip.findUnique({ where: { id } });
   if (!trip) return { error: "Trip not found." };
   if (trip.status === "Completed" || trip.status === "Cancelled") return { error: "Cannot cancel a completed or already cancelled trip." };
