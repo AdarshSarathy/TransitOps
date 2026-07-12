@@ -24,6 +24,13 @@ const NAV_ITEMS = [
   { label: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
 
+const ROLE_NAV_ACCESS: Record<string, string[]> = {
+  "Fleet Manager": ["Dashboard", "Fleet", "Maintenance", "Fuel & Expenses", "Drivers", "Trips", "Analytics", "Settings"],
+  "Dispatcher": ["Dashboard", "Trips", "Fuel & Expenses", "Fleet", "Drivers", "Settings"],
+  "Safety Officer": ["Dashboard", "Drivers", "Fleet", "Maintenance", "Settings"],
+  "Financial Analyst": ["Dashboard", "Fuel & Expenses", "Analytics", "Settings"],
+};
+
 export function Sidebar({ currentRole }: { currentRole: string }) {
   const pathname = usePathname();
 
@@ -44,7 +51,10 @@ export function Sidebar({ currentRole }: { currentRole: string }) {
 
       {/* Navigation */}
       <nav className="mt-2 flex flex-1 flex-col gap-0.5 px-3">
-        {NAV_ITEMS.map(({ label, href, icon: Icon }) => {
+        {NAV_ITEMS.filter((item) => {
+          const allowed = ROLE_NAV_ACCESS[currentRole] || [];
+          return allowed.includes(item.label);
+        }).map(({ label, href, icon: Icon }) => {
           const isActive =
             href === "/dashboard"
               ? pathname === "/dashboard"
