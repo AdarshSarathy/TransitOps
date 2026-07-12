@@ -3,15 +3,15 @@
 import { useState, useActionState, useEffect } from "react";
 import { createVehicle, type CreateVehicleState } from "@/app/actions/master-data";
 import type { Vehicle } from "@prisma/client";
-import { Plus, X, Search, ChevronDown } from "lucide-react";
+import { Plus, X, Search, ChevronDown, FileText, FilePlus, Download } from "lucide-react";
 
 const VEHICLE_STATUSES = ["Available", "On Trip", "In Shop", "Retired"] as const;
 
 const STATUS_STYLES: Record<string, string> = {
-  Available: "bg-emerald-500/15 text-emerald-400 border-emerald-500/20",
-  "On Trip": "bg-blue-500/15 text-blue-400 border-blue-500/20",
-  "In Shop": "bg-orange-500/15 text-orange-400 border-orange-500/20",
-  Retired: "bg-red-500/15 text-red-400 border-red-500/20",
+  Available: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+  "On Trip": "bg-blue-500/10 text-blue-400 border-blue-500/20",
+  "In Shop": "bg-amber-500/10 text-amber-400 border-amber-500/20",
+  Retired: "bg-rose-500/10 text-rose-400 border-rose-500/20",
 };
 
 function formatCurrency(amount: number): string {
@@ -35,6 +35,7 @@ export function VehicleRegistryClient({
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [showModal, setShowModal] = useState(false);
+  const [showDocsModal, setShowDocsModal] = useState<string | null>(null);
   const [formState, formAction, isPending] = useActionState<CreateVehicleState, FormData>(
     createVehicle,
     {}
@@ -69,7 +70,7 @@ export function VehicleRegistryClient({
         </div>
         <button
           onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#d4910a] to-[#e6a817] px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-[#d4910a]/20 transition-all hover:shadow-[#d4910a]/30 hover:-translate-y-px"
+          className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-amber-500/20 transition-all hover:from-amber-400 hover:to-orange-400 hover:-translate-y-px hover:shadow-amber-500/30"
         >
           <Plus className="h-4 w-4" />
           Add Vehicle
@@ -109,27 +110,30 @@ export function VehicleRegistryClient({
       </div>
 
       {/* Table */}
-      <div className="overflow-hidden rounded-xl border border-[#1e1e2e]">
+      <div className="overflow-hidden rounded-xl border border-slate-800 bg-slate-900 shadow-lg shadow-black/20">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-[#1e1e2e] bg-[#0a0a12]">
-              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[#6b7280]">
+            <tr className="border-b border-slate-800 bg-slate-950/50">
+              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400">
                 Reg. No. (Unique)
               </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[#6b7280]">
+              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400">
                 Name/Model
               </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[#6b7280]">
+              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400">
                 Capacity
               </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[#6b7280]">
+              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400">
                 Odometer
               </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[#6b7280]">
+              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400">
                 Acq. Cost
               </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[#6b7280]">
+              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400">
                 Status
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400">
+                Docs
               </th>
             </tr>
           </thead>
@@ -147,9 +151,7 @@ export function VehicleRegistryClient({
               filtered.map((vehicle, idx) => (
                 <tr
                   key={vehicle.id}
-                  className={`border-b border-[#1e1e2e]/50 transition-colors hover:bg-[#111119] ${
-                    idx % 2 === 0 ? "bg-[#0d0d0d]" : "bg-[#0a0a12]/50"
-                  }`}
+                  className="border-b border-slate-800/50 transition-colors hover:bg-slate-800/30"
                 >
                   <td className="px-4 py-3 font-mono text-sm text-[#e0e0e0]">
                     {vehicle.registrationNumber}
@@ -174,6 +176,15 @@ export function VehicleRegistryClient({
                     >
                       {vehicle.status}
                     </span>
+                  </td>
+                  <td className="px-4 py-3">
+                    <button
+                      onClick={() => setShowDocsModal(vehicle.registrationNumber)}
+                      className="inline-flex items-center gap-1.5 rounded bg-[#1e1e2e] px-2.5 py-1.5 text-xs font-medium text-[#e0e0e0] transition-colors hover:bg-[#d4910a] hover:text-black"
+                    >
+                      <FileText className="h-3.5 w-3.5" />
+                      View Docs
+                    </button>
                   </td>
                 </tr>
               ))
@@ -310,12 +321,61 @@ export function VehicleRegistryClient({
                 <button
                   type="submit"
                   disabled={isPending}
-                  className="flex-1 rounded-lg bg-gradient-to-r from-[#d4910a] to-[#e6a817] py-2.5 text-sm font-semibold text-white shadow-lg shadow-[#d4910a]/20 transition-all hover:shadow-[#d4910a]/30 disabled:opacity-60"
+                  className="flex-1 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 py-2.5 text-sm font-semibold text-white shadow-lg shadow-amber-500/20 transition-all hover:from-amber-400 hover:to-orange-400 hover:-translate-y-px hover:shadow-amber-500/30 disabled:opacity-60"
                 >
                   {isPending ? "Adding..." : "Add Vehicle"}
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* ── Document Management Modal (Mock) ─────────────────────────────── */}
+      {showDocsModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="w-full max-w-md animate-[modalIn_0.25s_ease-out] rounded-2xl border border-[#1e1e2e] bg-[#111119] p-6 shadow-2xl">
+            <div className="mb-5 flex items-center justify-between">
+              <div>
+                <h2 className="text-lg font-bold text-white">Vehicle Documents</h2>
+                <p className="text-xs text-[#9ca3af]">{showDocsModal}</p>
+              </div>
+              <button
+                onClick={() => setShowDocsModal(null)}
+                className="rounded-lg p-1.5 text-[#6b7280] transition-colors hover:bg-[#1e1e2e] hover:text-white"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="space-y-3 mb-6">
+              <div className="flex items-center justify-between rounded-lg border border-[#2a2a3e] bg-[#0a0a12] p-3">
+                <div className="flex items-center gap-3">
+                  <FileText className="h-5 w-5 text-emerald-500" />
+                  <div>
+                    <p className="text-sm font-medium text-white">Registration_Cert.pdf</p>
+                    <p className="text-xs text-[#6b7280]">Added 12 Jan 2026</p>
+                  </div>
+                </div>
+                <button className="text-[#6b7280] hover:text-white"><Download className="h-4 w-4" /></button>
+              </div>
+
+              <div className="flex items-center justify-between rounded-lg border border-[#2a2a3e] bg-[#0a0a12] p-3">
+                <div className="flex items-center gap-3">
+                  <FileText className="h-5 w-5 text-blue-500" />
+                  <div>
+                    <p className="text-sm font-medium text-white">Insurance_Policy.pdf</p>
+                    <p className="text-xs text-[#6b7280]">Expires 05 May 2027</p>
+                  </div>
+                </div>
+                <button className="text-[#6b7280] hover:text-white"><Download className="h-4 w-4" /></button>
+              </div>
+            </div>
+
+            <button className="flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-[#d4910a]/50 bg-[#d4910a]/10 py-3 text-sm font-medium text-[#d4910a] transition-colors hover:bg-[#d4910a]/20">
+              <FilePlus className="h-4 w-4" />
+              Upload New Document
+            </button>
           </div>
         </div>
       )}

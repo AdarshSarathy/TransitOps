@@ -159,3 +159,19 @@ export async function createDriver(
     return { error: "Failed to create driver. Please try again." };
   }
 }
+
+export async function sendLicenseReminder(driverId: string): Promise<CreateDriverState> {
+  const driver = await prisma.driver.findUnique({ where: { id: driverId } });
+  
+  if (!driver) {
+    return { error: "Driver not found" };
+  }
+
+  // Mocking the email transport
+  console.log(`[EMAIL TRANSPORT MOCK] Sending license reminder to driver: ${driver.name} (License: ${driver.licenseNumber})`);
+  console.log(`[EMAIL TRANSPORT MOCK] Expiry Date: ${driver.expiryDate}`);
+
+  // In a real application, you would use Nodemailer, Resend, SendGrid, etc. here
+
+  return { success: true };
+}
