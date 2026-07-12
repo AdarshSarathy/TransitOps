@@ -11,7 +11,7 @@ const COOKIE_NAME = "transitops-session";
 // Routes that don't require authentication
 const PUBLIC_PATHS = ["/login"];
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Allow static files and Next.js internals
