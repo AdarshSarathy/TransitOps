@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Check, X, Shield, Settings2, CheckCircle2 } from "lucide-react";
+import { Check, X, Shield, Settings2, CheckCircle2, Eye } from "lucide-react";
 
 export default function SettingsPage() {
   const [showToast, setShowToast] = useState(false);
@@ -96,6 +96,7 @@ export default function SettingsPage() {
                     <th className="px-4 py-3 font-semibold text-center">Fleet</th>
                     <th className="px-4 py-3 font-semibold text-center">Drivers</th>
                     <th className="px-4 py-3 font-semibold text-center">Trips</th>
+                    <th className="px-4 py-3 font-semibold text-center">Maintenance</th>
                     <th className="px-4 py-3 font-semibold text-center">Fuel/Exp.</th>
                     <th className="px-4 py-3 font-semibold text-center">Analytics</th>
                   </tr>
@@ -106,28 +107,31 @@ export default function SettingsPage() {
                   <tr className="border-b border-slate-800/50 transition-colors hover:bg-slate-800/30">
                     <td className="px-4 py-3 font-medium text-[#e0e0e0]">Fleet Manager</td>
                     <td className="px-4 py-3 text-center"><Check className="mx-auto h-4 w-4 text-emerald-500" /></td>
+                    <td className="px-4 py-3 text-center"><Eye className="mx-auto h-4 w-4 text-blue-400" /></td>
+                    <td className="px-4 py-3 text-center"><Eye className="mx-auto h-4 w-4 text-blue-400" /></td>
                     <td className="px-4 py-3 text-center"><Check className="mx-auto h-4 w-4 text-emerald-500" /></td>
-                    <td className="px-4 py-3 text-center"><X className="mx-auto h-4 w-4 text-[#6b7280]" /></td>
-                    <td className="px-4 py-3 text-center"><X className="mx-auto h-4 w-4 text-[#6b7280]" /></td>
-                    <td className="px-4 py-3 text-center"><X className="mx-auto h-4 w-4 text-[#6b7280]" /></td>
+                    <td className="px-4 py-3 text-center"><Check className="mx-auto h-4 w-4 text-emerald-500" /></td>
+                    <td className="px-4 py-3 text-center"><Eye className="mx-auto h-4 w-4 text-blue-400" /></td>
                   </tr>
 
                   {/* Dispatcher */}
                   <tr className="border-b border-slate-800/50 transition-colors hover:bg-slate-800/30">
                     <td className="px-4 py-3 font-medium text-[#e0e0e0]">Dispatcher</td>
-                    <td className="px-4 py-3 text-center"><X className="mx-auto h-4 w-4 text-[#6b7280]" /></td>
-                    <td className="px-4 py-3 text-center"><X className="mx-auto h-4 w-4 text-[#6b7280]" /></td>
+                    <td className="px-4 py-3 text-center"><Eye className="mx-auto h-4 w-4 text-blue-400" /></td>
+                    <td className="px-4 py-3 text-center"><Eye className="mx-auto h-4 w-4 text-blue-400" /></td>
                     <td className="px-4 py-3 text-center"><Check className="mx-auto h-4 w-4 text-emerald-500" /></td>
                     <td className="px-4 py-3 text-center"><X className="mx-auto h-4 w-4 text-[#6b7280]" /></td>
+                    <td className="px-4 py-3 text-center"><Check className="mx-auto h-4 w-4 text-emerald-500" /></td>
                     <td className="px-4 py-3 text-center"><X className="mx-auto h-4 w-4 text-[#6b7280]" /></td>
                   </tr>
 
                   {/* Safety Officer */}
                   <tr className="border-b border-slate-800/50 transition-colors hover:bg-slate-800/30">
                     <td className="px-4 py-3 font-medium text-[#e0e0e0]">Safety Officer</td>
-                    <td className="px-4 py-3 text-center"><X className="mx-auto h-4 w-4 text-[#6b7280]" /></td>
+                    <td className="px-4 py-3 text-center"><Eye className="mx-auto h-4 w-4 text-blue-400" /></td>
                     <td className="px-4 py-3 text-center"><Check className="mx-auto h-4 w-4 text-emerald-500" /></td>
                     <td className="px-4 py-3 text-center"><X className="mx-auto h-4 w-4 text-[#6b7280]" /></td>
+                    <td className="px-4 py-3 text-center"><Eye className="mx-auto h-4 w-4 text-blue-400" /></td>
                     <td className="px-4 py-3 text-center"><X className="mx-auto h-4 w-4 text-[#6b7280]" /></td>
                     <td className="px-4 py-3 text-center"><X className="mx-auto h-4 w-4 text-[#6b7280]" /></td>
                   </tr>
@@ -138,8 +142,9 @@ export default function SettingsPage() {
                     <td className="px-4 py-3 text-center"><X className="mx-auto h-4 w-4 text-[#6b7280]" /></td>
                     <td className="px-4 py-3 text-center"><X className="mx-auto h-4 w-4 text-[#6b7280]" /></td>
                     <td className="px-4 py-3 text-center"><X className="mx-auto h-4 w-4 text-[#6b7280]" /></td>
-                    <td className="px-4 py-3 text-center"><Check className="mx-auto h-4 w-4 text-emerald-500" /></td>
-                    <td className="px-4 py-3 text-center"><Check className="mx-auto h-4 w-4 text-emerald-500" /></td>
+                    <td className="px-4 py-3 text-center"><X className="mx-auto h-4 w-4 text-[#6b7280]" /></td>
+                    <td className="px-4 py-3 text-center"><Eye className="mx-auto h-4 w-4 text-blue-400" /></td>
+                    <td className="px-4 py-3 text-center"><Eye className="mx-auto h-4 w-4 text-blue-400" /></td>
                   </tr>
 
                 </tbody>
