@@ -13,10 +13,13 @@ type MaintenanceLogWithVehicle = MaintenanceLog & {
 export function MaintenanceClient({
   vehicles,
   initialLogs,
+  userRole,
 }: {
   vehicles: Vehicle[];
   initialLogs: MaintenanceLogWithVehicle[];
+  userRole: string;
 }) {
+  const isReadOnly = userRole !== "Fleet Manager";
   const [formState, formAction, isPending] = useActionState<ActionState, FormData>(
     createMaintenanceLog,
     {}
@@ -30,20 +33,30 @@ export function MaintenanceClient({
   };
 
   return (
-    <div className="grid h-full grid-cols-1 gap-6 lg:grid-cols-12">
-      {/* ── Left Column: Log Record ───────────────────────────────────────── */}
-      <div className="col-span-1 flex flex-col gap-4 lg:col-span-4">
-        <div>
-          <h1 className="text-xl font-bold text-white">Maintenance</h1>
-          <p className="mt-0.5 text-sm text-[#6b7280]">
-            Log and manage vehicle servicing
-          </p>
-        </div>
+    <div className="flex h-full flex-col gap-6">
+      {/* ── Header ───────────────────────────────────────── */}
+      <div>
+        <h1 className="text-xl font-bold text-white">Maintenance</h1>
+        <p className="mt-0.5 text-sm text-[#6b7280]">
+          Log and manage vehicle servicing
+        </p>
+      </div>
 
-        <div className="rounded-xl border border-slate-800 bg-slate-900 p-5 shadow-lg shadow-black/20">
-          <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-[#9ca3af]">
-            Log Record
-          </h2>
+      {isReadOnly && (
+        <div className="bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs px-4 py-2 rounded-lg -mt-2">
+          Viewing in Read-Only Mode
+        </div>
+      )}
+
+      {/* ── Main Content Grid ───────────────────────────────────────── */}
+      <div className={`grid flex-1 gap-6 min-h-0 ${isReadOnly ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-12'}`}>
+        {/* ── Left Column: Log Record ───────────────────────────────────────── */}
+        {!isReadOnly && (
+          <div className="col-span-1 flex flex-col gap-4 lg:col-span-4 overflow-y-auto">
+            <div className="rounded-xl border border-slate-800 bg-slate-900 p-5 shadow-lg shadow-black/20">
+              <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-[#9ca3af]">
+                Log Record
+              </h2>
 
           <form action={formAction} className="space-y-4">
             {formState.error && (
@@ -134,10 +147,11 @@ export function MaintenanceClient({
             </div>
           </form>
         </div>
-      </div>
+        </div>
+        )}
 
       {/* ── Right Column: Service Log ─────────────────────────────────────── */}
-      <div className="col-span-1 flex flex-col gap-4 overflow-hidden lg:col-span-8">
+      <div className={`col-span-1 flex flex-col gap-4 overflow-hidden ${!isReadOnly ? 'lg:col-span-8' : ''}`}>
         <div className="flex-1 overflow-hidden rounded-xl border border-slate-800 bg-slate-900 shadow-lg shadow-black/20 flex flex-col">
           <div className="border-b border-slate-800 bg-slate-950/50 px-5 py-4 flex items-center justify-between">
             <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-400">
@@ -164,7 +178,7 @@ export function MaintenanceClient({
                       <th className="px-4 py-3 font-semibold">Date</th>
                       <th className="px-4 py-3 font-semibold">Cost</th>
                       <th className="px-4 py-3 font-semibold">Status</th>
-                      <th className="px-4 py-3 font-semibold text-right">Action</th>
+                      {!isReadOnly && <th className="px-4 py-3 font-semibold text-right">Action</th>}
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-800/50">
@@ -178,7 +192,7 @@ export function MaintenanceClient({
                         </td>
                         <td className="px-4 py-3">{log.serviceType}</td>
                         <td className="px-4 py-3">
-                          {new Date(log.date).toLocaleDateString()}
+                          {new Date(log.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                         </td>
                         <td className="px-4 py-3">₹{log.cost.toLocaleString()}</td>
                         <td className="px-4 py-3">
@@ -192,17 +206,19 @@ export function MaintenanceClient({
                             </span>
                           )}
                         </td>
-                        <td className="px-4 py-3 text-right">
-                          {log.status === "Active" && (
-                            <button
-                              onClick={() => handleCloseLog(log.id)}
-                              className="inline-flex items-center gap-1.5 rounded bg-[#2a2a3e] px-2 py-1 text-xs font-medium text-white transition-colors hover:bg-[#d4910a] hover:text-black"
-                            >
-                              <Play className="h-3.5 w-3.5" />
-                              Close
-                            </button>
-                          )}
-                        </td>
+                        {!isReadOnly && (
+                          <td className="px-4 py-3 text-right">
+                            {log.status === "Active" && (
+                              <button
+                                onClick={() => handleCloseLog(log.id)}
+                                className="inline-flex items-center gap-1.5 rounded bg-[#2a2a3e] px-2 py-1 text-xs font-medium text-white transition-colors hover:bg-[#d4910a] hover:text-black"
+                              >
+                                <Play className="h-3.5 w-3.5" />
+                                Close
+                              </button>
+                            )}
+                          </td>
+                        )}
                       </tr>
                     ))}
                   </tbody>
@@ -212,6 +228,7 @@ export function MaintenanceClient({
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }
