@@ -3,11 +3,17 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { ActionState } from "./trips";
+import { getSession } from "@/lib/auth";
 
 export async function logFuel(
   _prevState: ActionState,
   formData: FormData
 ): Promise<ActionState> {
+  const session = await getSession();
+  if (session?.role !== "Fleet Manager" && session?.role !== "Dispatcher") {
+    throw new Error("Unauthorized: Invalid Role.");
+  }
+
   const vehicleId = formData.get("vehicleId")?.toString().trim();
   const litersStr = formData.get("liters")?.toString().trim();
   const costStr = formData.get("cost")?.toString().trim();
@@ -54,6 +60,11 @@ export async function logExpense(
   _prevState: ActionState,
   formData: FormData
 ): Promise<ActionState> {
+  const session = await getSession();
+  if (session?.role !== "Fleet Manager" && session?.role !== "Dispatcher") {
+    throw new Error("Unauthorized: Invalid Role.");
+  }
+
   const tripId = formData.get("tripId")?.toString().trim() || null;
   const vehicleId = formData.get("vehicleId")?.toString().trim() || null;
   const tollCostStr = formData.get("tollCost")?.toString().trim() || "0";
@@ -122,6 +133,22 @@ export async function getOperationalCosts(): Promise<Record<string, number>> {
   for (const log of maintenanceLogs) {
     if (log._sum.cost) {
       costMap[log.vehicleId] = (costMap[log.vehicleId] || 0) + log._sum.cost;
+    }
+  }
+
+  const expenses = await prisma.expense.groupBy({
+    by: ['vehicleId'],
+    _sum: {
+      tollCost: true,
+      otherCost: true
+    }
+  });
+
+  for (const exp of expenses) {
+    if (exp.vehicleId) {
+      const toll = exp._sum.tollCost || 0;
+      const other = exp._sum.otherCost || 0;
+      costMap[exp.vehicleId] = (costMap[exp.vehicleId] || 0) + toll + other;
     }
   }
 
