@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { loginAction, type LoginState } from "@/app/actions/auth";
 
 const ROLES = [
@@ -23,13 +23,29 @@ export default function LoginPage() {
     {}
   );
 
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState("");
+
+  const fillDemo = (roleName: string) => {
+    const roleMap: Record<string, string> = {
+      "Fleet Manager": "fleet.manager@transitops.in",
+      "Dispatcher": "dispatcher@transitops.in",
+      "Safety Officer": "safety.officer@transitops.in",
+      "Financial Analyst": "financial.analyst@transitops.in"
+    };
+    setEmail(roleMap[roleName]);
+    setPassword("Transit@2026");
+    setRole(roleName);
+  };
+
   return (
     <div className="flex min-h-screen flex-col md:flex-row bg-slate-950 animate-[loginFadeIn_0.6s_ease-out]">
       {/* ── Left branding panel ──────────────────────────────────────── */}
       <aside className="flex w-full md:w-[42%] min-w-[340px] flex-col justify-between border-b md:border-b-0 md:border-r border-slate-800 bg-slate-900 p-8 md:p-12">
-        <div className="flex flex-col gap-14">
+        <div className="flex flex-col items-center justify-center h-full text-center space-y-4">
           {/* Logo */}
-          <div className="flex items-center gap-4">
+          <div className="flex flex-col items-center gap-4">
             <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-amber-500/10 p-2">
               <svg
                 viewBox="0 0 32 32"
@@ -48,19 +64,6 @@ export default function LoginPage() {
                 Smart Transport Operations Platform
               </p>
             </div>
-          </div>
-
-          {/* Role list */}
-          <div className="hidden md:block pl-1">
-            <p className="mb-3 text-sm font-medium text-slate-300">One login, four roles:</p>
-            <ul className="flex flex-col gap-2.5">
-              {ROLES.map((role) => (
-                <li key={role} className="flex items-center gap-3 text-sm text-slate-300">
-                  <span className="h-2 w-2 flex-shrink-0 rounded-full bg-amber-500 shadow-[0_0_6px_rgba(212,145,10,0.4)]" />
-                  {role}
-                </li>
-              ))}
-            </ul>
           </div>
         </div>
 
@@ -97,6 +100,17 @@ export default function LoginPage() {
               </div>
             )}
 
+            {/* Quick Demo Access */}
+            <div>
+              <p className="text-xs text-slate-400 mb-2 uppercase tracking-wider">Quick Demo Access</p>
+              <div className="flex flex-wrap">
+                <button type="button" onClick={() => fillDemo("Fleet Manager")} className="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors border border-slate-700 rounded-full px-3 py-1 mr-2 mb-4">Fleet Mgr</button>
+                <button type="button" onClick={() => fillDemo("Dispatcher")} className="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors border border-slate-700 rounded-full px-3 py-1 mr-2 mb-4">Dispatcher</button>
+                <button type="button" onClick={() => fillDemo("Safety Officer")} className="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors border border-slate-700 rounded-full px-3 py-1 mr-2 mb-4">Safety</button>
+                <button type="button" onClick={() => fillDemo("Financial Analyst")} className="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors border border-slate-700 rounded-full px-3 py-1 mr-2 mb-4">Finance</button>
+              </div>
+            </div>
+
             {/* Email */}
             <div className="flex flex-col gap-1.5">
               <label htmlFor="login-email" className="text-xs font-semibold uppercase tracking-wider text-slate-400">
@@ -107,6 +121,8 @@ export default function LoginPage() {
                 name="email"
                 type="email"
                 autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
                 placeholder="raven.k@transitops.in"
                 className="w-full rounded-lg border border-slate-700 bg-slate-900/50 px-3.5 py-2.5 text-sm text-slate-200 outline-none transition-all placeholder:text-slate-500 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/50"
@@ -123,6 +139,8 @@ export default function LoginPage() {
                 name="password"
                 type="password"
                 autoComplete="current-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 required
                 placeholder="••••••••"
                 className="w-full rounded-lg border border-slate-700 bg-slate-900/50 px-3.5 py-2.5 text-sm text-slate-200 outline-none transition-all placeholder:text-slate-500 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/50"
@@ -139,7 +157,8 @@ export default function LoginPage() {
                   id="login-role"
                   name="role"
                   required
-                  defaultValue=""
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
                   className="w-full appearance-none rounded-lg border border-slate-700 bg-slate-900/50 px-3.5 py-2.5 pr-10 text-sm text-slate-200 outline-none transition-all focus:border-amber-500 focus:ring-2 focus:ring-amber-500/50 cursor-pointer"
                 >
                   <option value="" disabled className="bg-slate-900 text-slate-400">
@@ -219,21 +238,7 @@ export default function LoginPage() {
             </button>
           </form>
 
-          {/* Access scope legend */}
-          <div className="mt-8 border-t border-slate-800 pt-5">
-            <p className="mb-2 text-xs text-slate-400">
-              Access is scoped by role after login:
-            </p>
-            <ul className="flex flex-col gap-1">
-              {Object.entries(ROLE_ACCESS).map(([role, access]) => (
-                <li key={role} className="flex gap-1.5 text-xs text-slate-500">
-                  <span className="font-medium text-slate-400">{role}</span>
-                  <span className="text-amber-500">→</span>
-                  <span className="italic text-slate-500">{access}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <p className="text-xs text-slate-500 mt-6 text-center">Demo credentials also available in README.md</p>
         </div>
       </main>
     </div>
