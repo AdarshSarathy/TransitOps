@@ -230,7 +230,7 @@ export function AnalyticsClient({
                   cursor={{ fill: '#1a1a2e' }}
                   contentStyle={{ backgroundColor: '#111119', borderColor: '#1e1e2e', borderRadius: '8px' }}
                   itemStyle={{ color: '#e0e0e0' }}
-                  formatter={(value: number) => [`₹${value.toLocaleString()}`, 'Revenue']}
+                  formatter={(value: any) => [`₹${Number(value).toLocaleString()}`, 'Revenue']}
                 />
                 <Bar dataKey="revenue" fill="#d4910a" radius={[4, 4, 0, 0]} />
               </BarChart>
@@ -265,7 +265,7 @@ export function AnalyticsClient({
                   cursor={{ fill: '#1a1a2e' }}
                   contentStyle={{ backgroundColor: '#111119', borderColor: '#1e1e2e', borderRadius: '8px' }}
                   itemStyle={{ color: '#e0e0e0' }}
-                  formatter={(value: number) => [`₹${value.toLocaleString()}`, 'Total Cost']}
+                  formatter={(value: any) => [`₹${Number(value).toLocaleString()}`, 'Total Cost']}
                 />
                 <Bar dataKey="cost" fill="#ef4444" radius={[0, 4, 4, 0]} barSize={24} />
               </BarChart>
