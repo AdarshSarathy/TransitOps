@@ -20,6 +20,7 @@ export function FinanceClient({
   fuelLogs,
   expenses,
   totalOperationalCost,
+  userRole,
 }: {
   vehicles: Vehicle[];
   trips: Trip[];
@@ -27,7 +28,9 @@ export function FinanceClient({
   fuelLogs: FuelLogWithVehicle[];
   expenses: ExpenseWithRelations[];
   totalOperationalCost: number;
+  userRole: string;
 }) {
+  const isReadOnly = !["Fleet Manager", "Dispatcher"].includes(userRole);
   const [isFuelModalOpen, setIsFuelModalOpen] = useState(false);
   const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
 
@@ -60,24 +63,32 @@ export function FinanceClient({
           </p>
         </div>
         
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => setIsFuelModalOpen(true)}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-[#2a2a3e] bg-[#141420] px-4 py-2 text-sm font-medium text-[#e0e0e0] shadow-sm transition-all hover:bg-[#1a1a2e] hover:text-white"
-          >
-            <Droplets className="h-4 w-4 text-[#d4910a]" />
-            Log Fuel
-          </button>
-          
-          <button
-            onClick={() => setIsExpenseModalOpen(true)}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-amber-500/20 transition-all hover:from-amber-400 hover:to-orange-400 hover:shadow-amber-500/30"
-          >
-            <Plus className="h-4 w-4" />
-            Add Expense
-          </button>
-        </div>
+        {!isReadOnly && (
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setIsFuelModalOpen(true)}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-[#2a2a3e] bg-[#141420] px-4 py-2 text-sm font-medium text-[#e0e0e0] shadow-sm transition-all hover:bg-[#1a1a2e] hover:text-white"
+            >
+              <Droplets className="h-4 w-4 text-[#d4910a]" />
+              Log Fuel
+            </button>
+            
+            <button
+              onClick={() => setIsExpenseModalOpen(true)}
+              className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-amber-500/20 transition-all hover:from-amber-400 hover:to-orange-400 hover:shadow-amber-500/30"
+            >
+              <Plus className="h-4 w-4" />
+              Add Expense
+            </button>
+          </div>
+        )}
       </div>
+
+      {isReadOnly && (
+        <div className="bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs px-4 py-2 rounded-lg mb-6 -mt-2">
+          Viewing in Read-Only Mode
+        </div>
+      )}
 
       {/* ── Tables ──────────────────────────────────────────────────────────── */}
       <div className="flex min-h-0 flex-1 flex-col gap-6 pb-20">
@@ -112,7 +123,7 @@ export function FinanceClient({
                         <td className="px-4 py-3 font-medium text-[#e0e0e0]">
                           {log.vehicle.registrationNumber}
                         </td>
-                        <td className="px-4 py-3">{new Date(log.date).toLocaleDateString()}</td>
+                        <td className="px-4 py-3">{new Date(log.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</td>
                         <td className="px-4 py-3">{log.liters.toFixed(2)} L</td>
                         <td className="px-4 py-3 text-[#d4910a]">₹{log.cost.toLocaleString()}</td>
                       </tr>
