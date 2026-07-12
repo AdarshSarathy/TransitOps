@@ -30,7 +30,7 @@ export function Sidebar({ currentRole }: { currentRole: string }) {
   return (
     <aside className="flex w-[200px] flex-shrink-0 flex-col border-r border-[#1e1e2e] bg-[#0a0a12]">
       {/* Logo */}
-      <div className="flex items-center gap-2.5 px-5 py-5">
+      <Link href="/dashboard" className="flex items-center gap-2.5 px-5 py-5 hover:opacity-80 transition-opacity">
         <svg viewBox="0 0 32 32" fill="none" className="h-7 w-7 flex-shrink-0">
           <rect x="2" y="2" width="12" height="12" rx="2" fill="#d4910a" opacity="0.9" />
           <rect x="18" y="2" width="12" height="12" rx="2" fill="#d4910a" opacity="0.5" />
@@ -40,7 +40,7 @@ export function Sidebar({ currentRole }: { currentRole: string }) {
         <span className="text-lg font-bold tracking-tight text-white">
           Transit<span className="text-[#d4910a]">Ops</span>
         </span>
-      </div>
+      </Link>
 
       {/* Navigation */}
       <nav className="mt-2 flex flex-1 flex-col gap-0.5 px-3">

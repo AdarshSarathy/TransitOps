@@ -24,71 +24,39 @@ export default function LoginPage() {
   );
 
   return (
-    <div className="login-shell">
+    <div className="flex min-h-screen flex-col md:flex-row bg-slate-950 animate-[loginFadeIn_0.6s_ease-out]">
       {/* ── Left branding panel ──────────────────────────────────────── */}
-      <aside className="login-brand">
-        <div className="login-brand__inner">
+      <aside className="flex w-full md:w-[42%] min-w-[340px] flex-col justify-between border-b md:border-b-0 md:border-r border-slate-800 bg-slate-900 p-8 md:p-12">
+        <div className="flex flex-col gap-14">
           {/* Logo */}
-          <div className="login-logo">
-            <div className="login-logo__icon">
+          <div className="flex items-center gap-4">
+            <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-amber-500/10 p-2">
               <svg
                 viewBox="0 0 32 32"
                 fill="none"
-                className="login-logo__svg"
+                className="h-full w-full"
               >
-                <rect
-                  x="2"
-                  y="2"
-                  width="12"
-                  height="12"
-                  rx="2"
-                  fill="#d4910a"
-                  opacity="0.9"
-                />
-                <rect
-                  x="18"
-                  y="2"
-                  width="12"
-                  height="12"
-                  rx="2"
-                  fill="#d4910a"
-                  opacity="0.5"
-                />
-                <rect
-                  x="2"
-                  y="18"
-                  width="12"
-                  height="12"
-                  rx="2"
-                  fill="#d4910a"
-                  opacity="0.5"
-                />
-                <rect
-                  x="18"
-                  y="18"
-                  width="12"
-                  height="12"
-                  rx="2"
-                  fill="#d4910a"
-                  opacity="0.3"
-                />
+                <rect x="2" y="2" width="12" height="12" rx="2" fill="#d4910a" opacity="0.9" />
+                <rect x="18" y="2" width="12" height="12" rx="2" fill="#d4910a" opacity="0.5" />
+                <rect x="2" y="18" width="12" height="12" rx="2" fill="#d4910a" opacity="0.5" />
+                <rect x="18" y="18" width="12" height="12" rx="2" fill="#d4910a" opacity="0.3" />
               </svg>
             </div>
             <div>
-              <h1 className="login-logo__title">TransitOps</h1>
-              <p className="login-logo__subtitle">
+              <h1 className="text-2xl font-bold tracking-tight text-white leading-tight">TransitOps</h1>
+              <p className="mt-0.5 text-sm text-slate-400">
                 Smart Transport Operations Platform
               </p>
             </div>
           </div>
 
           {/* Role list */}
-          <div className="login-roles">
-            <p className="login-roles__heading">One login, four roles:</p>
-            <ul className="login-roles__list">
+          <div className="hidden md:block pl-1">
+            <p className="mb-3 text-sm font-medium text-slate-300">One login, four roles:</p>
+            <ul className="flex flex-col gap-2.5">
               {ROLES.map((role) => (
-                <li key={role} className="login-roles__item">
-                  <span className="login-roles__dot" />
+                <li key={role} className="flex items-center gap-3 text-sm text-slate-300">
+                  <span className="h-2 w-2 flex-shrink-0 rounded-full bg-amber-500 shadow-[0_0_6px_rgba(212,145,10,0.4)]" />
                   {role}
                 </li>
               ))}
@@ -97,25 +65,25 @@ export default function LoginPage() {
         </div>
 
         {/* Footer */}
-        <footer className="login-brand__footer">
+        <footer className="text-xs uppercase tracking-wider text-slate-500 mt-12 md:mt-0">
           TransitOps © {new Date().getFullYear()} · RBAC ENQ
         </footer>
       </aside>
 
       {/* ── Right form panel ─────────────────────────────────────────── */}
-      <main className="login-form-panel">
-        <div className="login-form-wrapper">
-          <h2 className="login-form__title">Sign in to your account</h2>
-          <p className="login-form__subtitle">
+      <main className="flex flex-1 items-center justify-center bg-slate-950 p-8 md:p-12">
+        <div className="w-full max-w-[420px]">
+          <h2 className="mb-1 text-2xl font-bold text-white">Sign in to your account</h2>
+          <p className="mb-7 text-sm text-slate-400">
             Enter your credentials to continue
           </p>
 
-          <form action={formAction} className="login-form">
+          <form action={formAction} className="flex flex-col gap-5">
             {/* Error banner */}
             {state.error && (
-              <div className="login-error" role="alert">
+              <div className="flex items-center gap-2 rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-400 animate-[loginShake_0.35s_ease-out]" role="alert">
                 <svg
-                  className="login-error__icon"
+                  className="h-5 w-5 flex-shrink-0"
                   viewBox="0 0 20 20"
                   fill="currentColor"
                 >
@@ -130,8 +98,8 @@ export default function LoginPage() {
             )}
 
             {/* Email */}
-            <div className="login-field">
-              <label htmlFor="login-email" className="login-label">
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="login-email" className="text-xs font-semibold uppercase tracking-wider text-slate-400">
                 Email
               </label>
               <input
@@ -141,13 +109,13 @@ export default function LoginPage() {
                 autoComplete="email"
                 required
                 placeholder="raven.k@transitops.in"
-                className="login-input"
+                className="w-full rounded-lg border border-slate-700 bg-slate-900/50 px-3.5 py-2.5 text-sm text-slate-200 outline-none transition-all placeholder:text-slate-500 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/50"
               />
             </div>
 
             {/* Password */}
-            <div className="login-field">
-              <label htmlFor="login-password" className="login-label">
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="login-password" className="text-xs font-semibold uppercase tracking-wider text-slate-400">
                 Password
               </label>
               <input
@@ -157,34 +125,34 @@ export default function LoginPage() {
                 autoComplete="current-password"
                 required
                 placeholder="••••••••"
-                className="login-input"
+                className="w-full rounded-lg border border-slate-700 bg-slate-900/50 px-3.5 py-2.5 text-sm text-slate-200 outline-none transition-all placeholder:text-slate-500 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/50"
               />
             </div>
 
             {/* Role */}
-            <div className="login-field">
-              <label htmlFor="login-role" className="login-label">
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="login-role" className="text-xs font-semibold uppercase tracking-wider text-slate-400">
                 Role (RBAC)
               </label>
-              <div className="login-select-wrapper">
+              <div className="relative">
                 <select
                   id="login-role"
                   name="role"
                   required
                   defaultValue=""
-                  className="login-select"
+                  className="w-full appearance-none rounded-lg border border-slate-700 bg-slate-900/50 px-3.5 py-2.5 pr-10 text-sm text-slate-200 outline-none transition-all focus:border-amber-500 focus:ring-2 focus:ring-amber-500/50 cursor-pointer"
                 >
-                  <option value="" disabled>
+                  <option value="" disabled className="bg-slate-900 text-slate-400">
                     Select your role
                   </option>
                   {ROLES.map((role) => (
-                    <option key={role} value={role}>
+                    <option key={role} value={role} className="bg-slate-900 text-slate-200">
                       {role}
                     </option>
                   ))}
                 </select>
                 <svg
-                  className="login-select__chevron"
+                  className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-500"
                   viewBox="0 0 20 20"
                   fill="currentColor"
                 >
@@ -198,18 +166,18 @@ export default function LoginPage() {
             </div>
 
             {/* Remember / Forgot */}
-            <div className="login-extras">
-              <label className="login-remember">
+            <div className="flex items-center justify-between">
+              <label className="flex cursor-not-allowed items-center gap-2 opacity-50">
                 <input
                   type="checkbox"
-                  className="login-remember__checkbox"
+                  className="h-4 w-4 cursor-not-allowed accent-amber-500"
                   disabled
                 />
-                <span className="login-remember__text">Remember me</span>
+                <span className="text-sm text-slate-300">Remember me</span>
               </label>
               <button
                 type="button"
-                className="login-forgot"
+                className="text-sm text-amber-500 opacity-60 transition-opacity hover:opacity-80 cursor-not-allowed"
                 title="Coming soon"
               >
                 Forgot password?
@@ -220,13 +188,13 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isPending}
-              className="login-submit"
+              className="mt-1 w-full rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-amber-500/20 transition-all hover:from-amber-400 hover:to-orange-400 hover:-translate-y-px hover:shadow-amber-500/30 disabled:cursor-wait disabled:opacity-70 disabled:hover:translate-y-0"
             >
               {isPending ? (
-                <span className="login-submit__loading">
-                  <svg className="login-spinner" viewBox="0 0 24 24">
+                <span className="flex items-center justify-center gap-2">
+                  <svg className="h-5 w-5 animate-spin" viewBox="0 0 24 24">
                     <circle
-                      className="login-spinner__track"
+                      className="opacity-25"
                       cx="12"
                       cy="12"
                       r="10"
@@ -235,7 +203,7 @@ export default function LoginPage() {
                       fill="none"
                     />
                     <path
-                      className="login-spinner__arc"
+                      className="opacity-100"
                       d="M12 2a10 10 0 0 1 10 10"
                       stroke="currentColor"
                       strokeWidth="3"
@@ -252,16 +220,16 @@ export default function LoginPage() {
           </form>
 
           {/* Access scope legend */}
-          <div className="login-scope">
-            <p className="login-scope__title">
+          <div className="mt-8 border-t border-slate-800 pt-5">
+            <p className="mb-2 text-xs text-slate-400">
               Access is scoped by role after login:
             </p>
-            <ul className="login-scope__list">
+            <ul className="flex flex-col gap-1">
               {Object.entries(ROLE_ACCESS).map(([role, access]) => (
-                <li key={role} className="login-scope__item">
-                  <span className="login-scope__role">{role}</span>
-                  <span className="login-scope__arrow">→</span>
-                  <span className="login-scope__access">{access}</span>
+                <li key={role} className="flex gap-1.5 text-xs text-slate-500">
+                  <span className="font-medium text-slate-400">{role}</span>
+                  <span className="text-amber-500">→</span>
+                  <span className="italic text-slate-500">{access}</span>
                 </li>
               ))}
             </ul>
