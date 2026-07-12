@@ -1,0 +1,117 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ─── Authentication & RBAC ──────────────────────────────────────────────────
+
+model User {
+  id             String    @id @default(cuid())
+  email          String    @unique
+  password       String // bcrypt hash
+  role           String // Fleet Manager | Dispatcher | Safety Officer | Financial Analyst
+  failedAttempts Int       @default(0)
+  lockedUntil    DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+// ─── Fleet ──────────────────────────────────────────────────────────────────
+
+model Vehicle {
+  id                 String           @id @default(cuid())
+  registrationNumber String           @unique
+  model              String
+  capacity           String // e.g. "500 kg", "5 Ton"
+  odometer           Int // km
+  acquisitionCost    Float
+  status             String           @default("Available") // Available | On Trip | In Shop | Retired
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  trips              Trip[]
+  maintenanceLogs    MaintenanceLog[]
+  fuelLogs           FuelLog[]
+  expenses           Expense[]
+}
+
+// ─── Drivers ────────────────────────────────────────────────────────────────
+
+model Driver {
+  id            String   @id @default(cuid())
+  name          String
+  licenseNumber String   @unique
+  category      String // LMV | HMV
+  expiryDate    DateTime
+  contact       String
+  safetyScore   Int      @default(100) // 0-100
+  status        String   @default("Available") // Available | On Trip | Off Duty | Suspended
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  trips         Trip[]
+}
+
+// ─── Trips ──────────────────────────────────────────────────────────────────
+
+model Trip {
+  id             String    @id @default(cuid())
+  source         String
+  destination    String
+  vehicleId      String?
+  vehicle        Vehicle?  @relation(fields: [vehicleId], references: [id])
+  driverId       String?
+  driver         Driver?   @relation(fields: [driverId], references: [id])
+  cargoWeight    Float?
+  plannedDistance Float
+  status         String    @default("Draft") // Draft | Dispatched | Completed | Cancelled
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  expenses       Expense[]
+}
+
+// ─── Maintenance ────────────────────────────────────────────────────────────
+
+model MaintenanceLog {
+  id          String    @id @default(cuid())
+  vehicleId   String
+  vehicle     Vehicle   @relation(fields: [vehicleId], references: [id])
+  serviceType String
+  cost        Float
+  date        DateTime
+  status      String    @default("Active") // Active | Closed
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  expenses    Expense[] @relation("LinkedMaintenance")
+}
+
+// ─── Fuel ───────────────────────────────────────────────────────────────────
+
+model FuelLog {
+  id        String   @id @default(cuid())
+  vehicleId String
+  vehicle   Vehicle  @relation(fields: [vehicleId], references: [id])
+  date      DateTime
+  liters    Float
+  cost      Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ─── Expenses ───────────────────────────────────────────────────────────────
+
+model Expense {
+  id                  String          @id @default(cuid())
+  tripId              String?
+  trip                Trip?           @relation(fields: [tripId], references: [id])
+  vehicleId           String?
+  vehicle             Vehicle?        @relation(fields: [vehicleId], references: [id])
+  tollCost            Float           @default(0)
+  otherCost           Float           @default(0)
+  linkedMaintenanceId String?
+  linkedMaintenance   MaintenanceLog? @relation("LinkedMaintenance", fields: [linkedMaintenanceId], references: [id])
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+}

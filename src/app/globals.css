@@ -1,0 +1,482 @@
+@import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+
+:root {
+  --bg-page: #0d0d0d;
+  --bg-brand: #111119;
+  --bg-form: #141420;
+  --bg-input: #0f0f1a;
+  --border-subtle: #1e1e2e;
+  --border-input: #2a2a3e;
+  --accent: #d4910a;
+  --accent-hover: #e6a817;
+  --text-primary: #ffffff;
+  --text-body: #e0e0e0;
+  --text-muted: #9ca3af;
+  --text-dim: #6b7280;
+  --error: #ef4444;
+  --error-bg: rgba(239, 68, 68, 0.08);
+
+  --background: #0d0d0d;
+  --foreground: #e0e0e0;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: "Inter", var(--font-geist-sans), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LOGIN PAGE STYLES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Shell: full-viewport two-column split ──────────────────────────────── */
+.login-shell {
+  display: flex;
+  min-height: 100vh;
+  background: var(--bg-page);
+  animation: loginFadeIn 0.6s ease-out;
+}
+
+@keyframes loginFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Left branding panel ─────────────────────────────────────────────────── */
+.login-brand {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 42%;
+  min-width: 340px;
+  background: var(--bg-brand);
+  border-right: 1px solid var(--border-subtle);
+  padding: 3rem 2.5rem;
+}
+
+.login-brand__inner {
+  display: flex;
+  flex-direction: column;
+  gap: 3.5rem;
+}
+
+.login-brand__footer {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* ── Logo ────────────────────────────────────────────────────────────────── */
+.login-logo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.login-logo__icon {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  background: rgba(212, 145, 10, 0.08);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+}
+
+.login-logo__svg {
+  width: 100%;
+  height: 100%;
+}
+
+.login-logo__title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.login-logo__subtitle {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin-top: 0.125rem;
+}
+
+/* ── Role list ───────────────────────────────────────────────────────────── */
+.login-roles {
+  padding-left: 0.25rem;
+}
+
+.login-roles__heading {
+  font-size: 0.95rem;
+  color: var(--text-body);
+  margin-bottom: 0.875rem;
+  font-weight: 500;
+}
+
+.login-roles__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.login-roles__item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+  color: var(--text-body);
+}
+
+.login-roles__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+  box-shadow: 0 0 6px rgba(212, 145, 10, 0.4);
+}
+
+/* ── Right form panel ────────────────────────────────────────────────────── */
+.login-form-panel {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: var(--bg-page);
+}
+
+.login-form-wrapper {
+  width: 100%;
+  max-width: 420px;
+}
+
+.login-form__title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.login-form__subtitle {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin-bottom: 1.75rem;
+}
+
+/* ── Form ────────────────────────────────────────────────────────────────── */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* ── Field ───────────────────────────────────────────────────────────────── */
+.login-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.login-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.login-input {
+  width: 100%;
+  padding: 0.7rem 0.875rem;
+  background: var(--bg-input);
+  border: 1px solid var(--border-input);
+  border-radius: 8px;
+  color: var(--text-body);
+  font-size: 0.9rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.login-input::placeholder {
+  color: var(--text-dim);
+}
+
+.login-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(212, 145, 10, 0.12);
+}
+
+/* ── Select (role dropdown) ──────────────────────────────────────────────── */
+.login-select-wrapper {
+  position: relative;
+}
+
+.login-select {
+  width: 100%;
+  padding: 0.7rem 2.5rem 0.7rem 0.875rem;
+  background: var(--bg-input);
+  border: 1px solid var(--border-input);
+  border-radius: 8px;
+  color: var(--text-body);
+  font-size: 0.9rem;
+  font-family: inherit;
+  outline: none;
+  appearance: none;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.login-select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(212, 145, 10, 0.12);
+}
+
+.login-select option {
+  background: #1a1a2e;
+  color: var(--text-body);
+}
+
+.login-select__chevron {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+/* ── Extras row (remember / forgot) ──────────────────────────────────────── */
+.login-extras {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.login-remember {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.login-remember__checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+  cursor: not-allowed;
+}
+
+.login-remember__text {
+  font-size: 0.85rem;
+  color: var(--text-body);
+}
+
+.login-forgot {
+  background: none;
+  border: none;
+  font-size: 0.85rem;
+  color: var(--accent);
+  cursor: not-allowed;
+  font-family: inherit;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.login-forgot:hover {
+  opacity: 0.8;
+}
+
+/* ── Submit button ───────────────────────────────────────────────────────── */
+.login-submit {
+  width: 100%;
+  padding: 0.8rem;
+  background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+  border: none;
+  border-radius: 10px;
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, opacity 0.2s;
+  box-shadow: 0 4px 14px rgba(212, 145, 10, 0.25);
+  margin-top: 0.25rem;
+}
+
+.login-submit:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(212, 145, 10, 0.35);
+}
+
+.login-submit:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.login-submit:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.login-submit__loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+/* ── Spinner ─────────────────────────────────────────────────────────────── */
+.login-spinner {
+  width: 20px;
+  height: 20px;
+  animation: loginSpin 0.8s linear infinite;
+}
+
+.login-spinner__track {
+  opacity: 0.2;
+}
+
+.login-spinner__arc {
+  opacity: 1;
+}
+
+@keyframes loginSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ── Error banner ────────────────────────────────────────────────────────── */
+.login-error {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: var(--error-bg);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 8px;
+  color: var(--error);
+  font-size: 0.875rem;
+  animation: loginShake 0.35s ease-out;
+}
+
+.login-error__icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+@keyframes loginShake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-6px);
+  }
+  40% {
+    transform: translateX(6px);
+  }
+  60% {
+    transform: translateX(-4px);
+  }
+  80% {
+    transform: translateX(4px);
+  }
+}
+
+/* ── Access scope legend ─────────────────────────────────────────────────── */
+.login-scope {
+  margin-top: 2rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.login-scope__title {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.login-scope__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.login-scope__item {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  display: flex;
+  gap: 0.375rem;
+}
+
+.login-scope__role {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.login-scope__arrow {
+  color: var(--accent);
+}
+
+.login-scope__access {
+  color: var(--text-dim);
+  font-style: italic;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .login-shell {
+    flex-direction: column;
+  }
+
+  .login-brand {
+    width: 100%;
+    min-width: unset;
+    padding: 2rem 1.5rem;
+    border-right: none;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .login-brand__inner {
+    gap: 1.5rem;
+  }
+
+  .login-roles {
+    display: none;
+  }
+
+  .login-form-panel {
+    padding: 2rem 1.5rem;
+  }
+}
