@@ -3,11 +3,17 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { ActionState } from "./trips";
+import { getSession } from "@/lib/auth";
 
 export async function createMaintenanceLog(
   _prevState: ActionState,
   formData: FormData
 ): Promise<ActionState> {
+  const session = await getSession();
+  if (session?.role !== "Fleet Manager") {
+    throw new Error("Unauthorized: Invalid Role.");
+  }
+
   const vehicleId = formData.get("vehicleId")?.toString().trim();
   const serviceType = formData.get("serviceType")?.toString().trim();
   const costStr = formData.get("cost")?.toString().trim();
@@ -66,6 +72,11 @@ export async function createMaintenanceLog(
 }
 
 export async function closeMaintenanceLog(id: string): Promise<ActionState> {
+  const session = await getSession();
+  if (session?.role !== "Fleet Manager") {
+    throw new Error("Unauthorized: Invalid Role.");
+  }
+
   const log = await prisma.maintenanceLog.findUnique({ 
     where: { id },
     include: { vehicle: true }
