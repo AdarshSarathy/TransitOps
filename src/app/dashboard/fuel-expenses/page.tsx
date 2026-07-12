@@ -1,8 +1,11 @@
 import { prisma } from "@/lib/prisma";
 import { getOperationalCosts } from "@/app/actions/finance";
 import { FinanceClient } from "./finance-client";
+import { getSession } from "@/lib/auth";
 
 export default async function FuelExpensesPage() {
+  const session = await getSession();
+  const userRole = session?.role || "Unknown";
   const vehicles = await prisma.vehicle.findMany({
     orderBy: { createdAt: "desc" },
   });
@@ -42,6 +45,7 @@ export default async function FuelExpensesPage() {
       fuelLogs={fuelLogs}
       expenses={expenses}
       totalOperationalCost={totalOperationalCost}
+      userRole={userRole}
     />
   );
 }
