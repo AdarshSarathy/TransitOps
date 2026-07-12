@@ -1,17 +1,17 @@
 "use client";
 
 import { useState, useActionState, useEffect } from "react";
-import { createDriver, type CreateDriverState } from "@/app/actions/master-data";
+import { createDriver, type CreateDriverState, sendLicenseReminder } from "@/app/actions/master-data";
 import type { Driver } from "@prisma/client";
-import { Plus, X, Search, ChevronDown } from "lucide-react";
+import { Plus, X, Search, ChevronDown, Mail, CheckCircle2 } from "lucide-react";
 
 const DRIVER_STATUSES = ["Available", "On Trip", "Off Duty", "Suspended"] as const;
 
 const STATUS_STYLES: Record<string, string> = {
-  Available: "bg-emerald-500/15 text-emerald-400 border-emerald-500/20",
-  "On Trip": "bg-blue-500/15 text-blue-400 border-blue-500/20",
-  "Off Duty": "bg-gray-500/15 text-gray-400 border-gray-500/20",
-  Suspended: "bg-orange-500/15 text-orange-400 border-orange-500/20",
+  Available: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+  "On Trip": "bg-blue-500/10 text-blue-400 border-blue-500/20",
+  "Off Duty": "bg-gray-500/10 text-gray-400 border-gray-500/20",
+  Suspended: "bg-amber-500/10 text-amber-400 border-amber-500/20",
 };
 
 const STATUS_TOGGLE_STYLES: Record<string, string> = {
@@ -46,6 +46,7 @@ export function DriverProfilesClient({
     new Set(DRIVER_STATUSES)
   );
   const [showModal, setShowModal] = useState(false);
+  const [reminderToast, setReminderToast] = useState<string | null>(null);
   const [formState, formAction, isPending] = useActionState<CreateDriverState, FormData>(
     createDriver,
     {}
@@ -57,6 +58,14 @@ export function DriverProfilesClient({
       setShowModal(false);
     }
   }, [formState.success]);
+
+  const handleSendReminder = async (driverId: string) => {
+    const res = await sendLicenseReminder(driverId);
+    if (res.success) {
+      setReminderToast(`Reminder sent successfully`);
+      setTimeout(() => setReminderToast(null), 3000);
+    }
+  };
 
   // Toggle status filter
   const toggleStatus = (status: string) => {
@@ -95,7 +104,7 @@ export function DriverProfilesClient({
         </div>
         <button
           onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#d4910a] to-[#e6a817] px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-[#d4910a]/20 transition-all hover:shadow-[#d4910a]/30 hover:-translate-y-px"
+          className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-amber-500/20 transition-all hover:from-amber-400 hover:to-orange-400 hover:-translate-y-px hover:shadow-amber-500/30"
         >
           <Plus className="h-4 w-4" />
           Add Driver
@@ -117,30 +126,33 @@ export function DriverProfilesClient({
       </div>
 
       {/* Table */}
-      <div className="overflow-hidden rounded-xl border border-[#1e1e2e]">
+      <div className="overflow-hidden rounded-xl border border-slate-800 bg-slate-900 shadow-lg shadow-black/20">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-[#1e1e2e] bg-[#0a0a12]">
-              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[#6b7280]">
+            <tr className="border-b border-slate-800 bg-slate-950/50">
+              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400">
                 Driver
               </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[#6b7280]">
+              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400">
                 License No
               </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[#6b7280]">
+              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400">
                 Category
               </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[#6b7280]">
+              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400">
                 Expiry
               </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[#6b7280]">
+              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400">
                 Contact
               </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[#6b7280]">
+              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400">
                 Safety
               </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[#6b7280]">
+              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400">
                 Status
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400">
+                Actions
               </th>
             </tr>
           </thead>
@@ -148,7 +160,7 @@ export function DriverProfilesClient({
             {filtered.length === 0 ? (
               <tr>
                 <td
-                  colSpan={7}
+                  colSpan={8}
                   className="py-12 text-center text-[#6b7280]"
                 >
                   No drivers match your filters.
@@ -160,9 +172,7 @@ export function DriverProfilesClient({
                 return (
                   <tr
                     key={driver.id}
-                    className={`border-b border-[#1e1e2e]/50 transition-colors hover:bg-[#111119] ${
-                      idx % 2 === 0 ? "bg-[#0d0d0d]" : "bg-[#0a0a12]/50"
-                    }`}
+                    className="border-b border-slate-800/50 transition-colors hover:bg-slate-800/30"
                   >
                     <td className="px-4 py-3 font-medium text-white">
                       {driver.name}
@@ -211,6 +221,17 @@ export function DriverProfilesClient({
                         {driver.status}
                       </span>
                     </td>
+                    <td className="px-4 py-3">
+                      {(expired || driver.status === "Suspended") && (
+                        <button
+                          onClick={() => handleSendReminder(driver.id)}
+                          className="inline-flex items-center gap-1.5 rounded bg-[#1e1e2e] px-2.5 py-1.5 text-xs font-medium text-[#e0e0e0] transition-colors hover:bg-orange-500 hover:text-white"
+                        >
+                          <Mail className="h-3.5 w-3.5" />
+                          Send Reminder
+                        </button>
+                      )}
+                    </td>
                   </tr>
                 );
               })
@@ -245,9 +266,19 @@ export function DriverProfilesClient({
       </div>
 
       {/* Business rule */}
-      <p className="text-xs italic text-[#d4910a]/70">
-        Rule: Expired license or Suspended status → blocked from trip assignment
-      </p>
+      <div className="flex items-center justify-between">
+        <p className="text-xs italic text-[#d4910a]/70">
+          Rule: Expired license or Suspended status → blocked from trip assignment
+        </p>
+        
+        {/* Toast */}
+        {reminderToast && (
+          <span className="flex items-center gap-1.5 text-sm font-medium text-emerald-400 animate-in fade-in slide-in-from-bottom-2">
+            <CheckCircle2 className="h-4 w-4" />
+            {reminderToast}
+          </span>
+        )}
+      </div>
 
       {/* ── Add Driver Modal ───────────────────────────────────────────── */}
       {showModal && (
@@ -388,7 +419,7 @@ export function DriverProfilesClient({
                 <button
                   type="submit"
                   disabled={isPending}
-                  className="flex-1 rounded-lg bg-gradient-to-r from-[#d4910a] to-[#e6a817] py-2.5 text-sm font-semibold text-white shadow-lg shadow-[#d4910a]/20 transition-all hover:shadow-[#d4910a]/30 disabled:opacity-60"
+                  className="flex-1 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 py-2.5 text-sm font-semibold text-white shadow-lg shadow-amber-500/20 transition-all hover:from-amber-400 hover:to-orange-400 hover:-translate-y-px hover:shadow-amber-500/30 disabled:opacity-60"
                 >
                   {isPending ? "Adding..." : "Add Driver"}
                 </button>
