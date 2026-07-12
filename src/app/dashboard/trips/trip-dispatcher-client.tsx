@@ -21,10 +21,10 @@ function parseCapacity(capacityStr: string): number {
 }
 
 const TRIP_STATUS_STYLES: Record<string, string> = {
-  Draft: "bg-gray-500/15 text-gray-400 border-gray-500/20",
-  Dispatched: "bg-blue-500/15 text-blue-400 border-blue-500/20",
-  Completed: "bg-emerald-500/15 text-emerald-400 border-emerald-500/20",
-  Cancelled: "bg-red-500/15 text-red-400 border-red-500/20",
+  Draft: "bg-gray-500/10 text-gray-400 border-gray-500/20",
+  Dispatched: "bg-blue-500/10 text-blue-400 border-blue-500/20",
+  Completed: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+  Cancelled: "bg-rose-500/10 text-rose-400 border-rose-500/20",
 };
 
 export function TripDispatcherClient({
@@ -89,7 +89,7 @@ export function TripDispatcherClient({
           </p>
         </div>
 
-        <div className="rounded-xl border border-[#1e1e2e] bg-[#0a0a12] p-5 shadow-xl">
+        <div className="rounded-xl border border-slate-800 bg-slate-900 p-5 shadow-lg shadow-black/20">
           <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-[#9ca3af]">
             Create Trip
           </h2>
@@ -258,7 +258,7 @@ export function TripDispatcherClient({
                 className={`w-full rounded-lg py-2.5 text-sm font-semibold text-white shadow-lg transition-all ${
                   isOverloaded 
                     ? "cursor-not-allowed bg-red-500/20 text-red-200 shadow-none" 
-                    : "bg-gradient-to-r from-[#d4910a] to-[#e6a817] shadow-[#d4910a]/20 hover:shadow-[#d4910a]/30 disabled:opacity-60"
+                    : "bg-gradient-to-r from-amber-500 to-orange-500 shadow-amber-500/20 hover:from-amber-400 hover:to-orange-400 hover:-translate-y-px hover:shadow-amber-500/30 disabled:opacity-60"
                 }`}
               >
                 {isPending ? "Creating..." : isOverloaded ? "Dispatch Disabled" : "Create Trip (Draft)"}
@@ -277,8 +277,8 @@ export function TripDispatcherClient({
         </div>
 
         {/* Live Board (Bottom Half) */}
-        <div className="flex-1 overflow-hidden rounded-xl border border-[#1e1e2e] bg-[#0a0a12] shadow-xl flex flex-col">
-          <div className="border-b border-[#1e1e2e] bg-[#111119] px-5 py-4">
+        <div className="flex-1 overflow-hidden rounded-xl border border-slate-800 bg-slate-900 shadow-lg shadow-black/20 flex flex-col">
+          <div className="border-b border-slate-800 bg-slate-950/50 px-5 py-4">
             <h2 className="text-sm font-semibold uppercase tracking-wider text-[#9ca3af]">
               Live Board
             </h2>
