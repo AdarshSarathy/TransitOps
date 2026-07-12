@@ -31,11 +31,14 @@ export function TripDispatcherClient({
   vehicles,
   drivers,
   initialTrips,
+  userRole,
 }: {
   vehicles: Vehicle[];
   drivers: Driver[];
   initialTrips: TripWithRelations[];
+  userRole: string;
 }) {
+  const isReadOnly = userRole !== "Dispatcher";
   const [source, setSource] = useState("");
   const [destination, setDestination] = useState("");
   const [selectedVehicleId, setSelectedVehicleId] = useState("");
@@ -89,6 +92,12 @@ export function TripDispatcherClient({
           </p>
         </div>
 
+        {isReadOnly && (
+          <div className="bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs px-4 py-2 rounded-lg mb-6">
+            Viewing in Read-Only Mode
+          </div>
+        )}
+
         <div className="rounded-xl border border-slate-800 bg-slate-900 p-5 shadow-lg shadow-black/20">
           <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-[#9ca3af]">
             Create Trip
@@ -117,6 +126,7 @@ export function TripDispatcherClient({
               <select
                 name="source"
                 required
+                disabled={isReadOnly}
                 value={source}
                 onChange={(e) => setSource(e.target.value)}
                 className="w-full rounded-lg border border-[#2a2a3e] bg-[#0f0f1a] px-3 py-2.5 text-sm text-[#e0e0e0] outline-none focus:border-[#d4910a]/50"
@@ -136,6 +146,7 @@ export function TripDispatcherClient({
               <select
                 name="destination"
                 required
+                disabled={isReadOnly}
                 value={destination}
                 onChange={(e) => setDestination(e.target.value)}
                 className="w-full rounded-lg border border-[#2a2a3e] bg-[#0f0f1a] px-3 py-2.5 text-sm text-[#e0e0e0] outline-none focus:border-[#d4910a]/50"
@@ -155,6 +166,7 @@ export function TripDispatcherClient({
               <select
                 name="vehicleId"
                 required
+                disabled={isReadOnly}
                 value={selectedVehicleId}
                 onChange={(e) => setSelectedVehicleId(e.target.value)}
                 className="w-full rounded-lg border border-[#2a2a3e] bg-[#0f0f1a] px-3 py-2.5 text-sm text-[#e0e0e0] outline-none focus:border-[#d4910a]/50"
@@ -176,7 +188,8 @@ export function TripDispatcherClient({
               <select
                 name="driverId"
                 required
-                className="w-full rounded-lg border border-[#2a2a3e] bg-[#0f0f1a] px-3 py-2.5 text-sm text-[#e0e0e0] outline-none focus:border-[#d4910a]/50"
+                disabled={isReadOnly}
+                className="w-full rounded-lg border border-[#2a2a3e] bg-[#0f0f1a] px-3 py-2.5 text-sm text-[#e0e0e0] outline-none focus:border-[#d4910a]/50 disabled:opacity-50"
               >
                 <option value="">Select driver...</option>
                 {availableDrivers.map((d) => (
@@ -196,6 +209,7 @@ export function TripDispatcherClient({
                 name="cargoWeight"
                 type="number"
                 required
+                disabled={isReadOnly}
                 min={1}
                 value={cargoWeight}
                 onChange={(e) => setCargoWeight(e.target.value === "" ? "" : Number(e.target.value))}
@@ -244,6 +258,7 @@ export function TripDispatcherClient({
                 name="plannedDistance"
                 type="number"
                 required
+                disabled={isReadOnly}
                 min={1}
                 placeholder="0"
                 className="w-full rounded-lg border border-[#2a2a3e] bg-[#0f0f1a] px-3 py-2.5 text-sm text-[#e0e0e0] outline-none focus:border-[#d4910a]/50"
@@ -254,7 +269,7 @@ export function TripDispatcherClient({
             <div className="pt-2">
               <button
                 type="submit"
-                disabled={isPending || isOverloaded}
+                disabled={isPending || isOverloaded || isReadOnly}
                 className={`w-full rounded-lg py-2.5 text-sm font-semibold text-white shadow-lg transition-all ${
                   isOverloaded 
                     ? "cursor-not-allowed bg-red-500/20 text-red-200 shadow-none" 
@@ -311,7 +326,7 @@ export function TripDispatcherClient({
                     
                     {/* Action Buttons based on status */}
                     <div className="flex items-center gap-2">
-                      {trip.status === "Draft" && (
+                      {!isReadOnly && trip.status === "Draft" && (
                         <>
                           <button
                             onClick={() => handleDispatch(trip.id)}
@@ -330,7 +345,7 @@ export function TripDispatcherClient({
                         </>
                       )}
                       
-                      {trip.status === "Dispatched" && (
+                      {!isReadOnly && trip.status === "Dispatched" && (
                         <button
                           onClick={() => handleComplete(trip.id)}
                           className="flex items-center gap-1.5 rounded bg-emerald-500/10 px-2 py-1 text-xs font-medium text-emerald-400 transition-colors hover:bg-emerald-500/20"
