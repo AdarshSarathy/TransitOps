@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import type { Vehicle, Driver } from "@prisma/client";
+import { getSession } from "@/lib/auth";
 
 // ═══════════════════════════════════════════════════════════════════════════
 // VEHICLES
@@ -23,6 +24,11 @@ export async function createVehicle(
   _prevState: CreateVehicleState,
   formData: FormData
 ): Promise<CreateVehicleState> {
+  const session = await getSession();
+  if (session?.role !== "Fleet Manager") {
+    throw new Error("Unauthorized: Invalid Role.");
+  }
+
   const registrationNumber = formData.get("registrationNumber")?.toString().trim();
   const model = formData.get("model")?.toString().trim();
   const capacity = formData.get("capacity")?.toString().trim();
@@ -98,6 +104,11 @@ export async function createDriver(
   _prevState: CreateDriverState,
   formData: FormData
 ): Promise<CreateDriverState> {
+  const session = await getSession();
+  if (session?.role !== "Safety Officer") {
+    throw new Error("Unauthorized: Invalid Role.");
+  }
+
   const name = formData.get("name")?.toString().trim();
   const licenseNumber = formData.get("licenseNumber")?.toString().trim();
   const category = formData.get("category")?.toString().trim();
@@ -161,6 +172,11 @@ export async function createDriver(
 }
 
 export async function sendLicenseReminder(driverId: string): Promise<CreateDriverState> {
+  const session = await getSession();
+  if (session?.role !== "Safety Officer") {
+    throw new Error("Unauthorized: Invalid Role.");
+  }
+
   const driver = await prisma.driver.findUnique({ where: { id: driverId } });
   
   if (!driver) {
