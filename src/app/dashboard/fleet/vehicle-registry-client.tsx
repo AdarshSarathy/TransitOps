@@ -29,9 +29,12 @@ function formatOdometer(km: number): string {
 
 export function VehicleRegistryClient({
   initialVehicles,
+  userRole,
 }: {
   initialVehicles: Vehicle[];
+  userRole: string;
 }) {
+  const isReadOnly = userRole !== "Fleet Manager";
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [showModal, setShowModal] = useState(false);
@@ -68,14 +71,22 @@ export function VehicleRegistryClient({
             {initialVehicles.length} vehicles registered
           </p>
         </div>
-        <button
-          onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-amber-500/20 transition-all hover:from-amber-400 hover:to-orange-400 hover:-translate-y-px hover:shadow-amber-500/30"
-        >
-          <Plus className="h-4 w-4" />
-          Add Vehicle
-        </button>
+        {!isReadOnly && (
+          <button
+            onClick={() => setShowModal(true)}
+            className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-amber-500/20 transition-all hover:from-amber-400 hover:to-orange-400 hover:-translate-y-px hover:shadow-amber-500/30"
+          >
+            <Plus className="h-4 w-4" />
+            Add Vehicle
+          </button>
+        )}
       </div>
+
+      {isReadOnly && (
+        <div className="bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs px-4 py-2 rounded-lg mb-6">
+          Viewing in Read-Only Mode
+        </div>
+      )}
 
       {/* Filters */}
       <div className="flex items-center gap-3">
@@ -372,10 +383,12 @@ export function VehicleRegistryClient({
               </div>
             </div>
 
-            <button className="flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-[#d4910a]/50 bg-[#d4910a]/10 py-3 text-sm font-medium text-[#d4910a] transition-colors hover:bg-[#d4910a]/20">
-              <FilePlus className="h-4 w-4" />
-              Upload New Document
-            </button>
+            {!isReadOnly && (
+              <button className="flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-[#d4910a]/50 bg-[#d4910a]/10 py-3 text-sm font-medium text-[#d4910a] transition-colors hover:bg-[#d4910a]/20">
+                <FilePlus className="h-4 w-4" />
+                Upload New Document
+              </button>
+            )}
           </div>
         </div>
       )}
